@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
+import { ContactService } from './service/contact.service';
 
 interface Contact {
   id: string;
@@ -16,9 +17,9 @@ interface Contact {
 
 interface Message {
   sender: string;
-  receiver: string;
+  receiver?: string;
   message: string;
-  time: Date;
+  time?: Date;
 }
 
 @Component({
@@ -26,7 +27,10 @@ interface Message {
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
+
+  @ViewChild('chats', { static: false }) private chatsContainer: ElementRef;
+
   contactForm: FormGroup;
   title = 'contacts';
   colors: string[] = ['#7eda8d', '#ff689f', '#fd8065'];
@@ -80,16 +84,19 @@ export class AppComponent implements OnInit{
     phone: '',
     address: '',
     role: '',
-    color: ''
+    color: '',
   };
 
   loggedInContact: Contact = this.contacts[0];
   messages: Message[] = [];
+  message: Message = {
+    sender: this.loggedInContact.id,
+    message: '',
+  };
 
-  constructor(private _snackBar: MatSnackBar) {}
+  constructor( private _snackBar: MatSnackBar, private contactService: ContactService ) {}
 
   ngOnInit(){
-
   }
 
   addContact(): void {
@@ -156,7 +163,30 @@ export class AppComponent implements OnInit{
     });
   }
 
+  getMessages(): Message[] {
+    return this.messages.filter(item => item.sender === this.loggedInContact.id || item.receiver === this.loggedInContact.id);
+  }
+
   openChats(): void {
-    
+    this.message.receiver = this.selectedContacts[0].id;
+    this.selectedContacts = [];
+  }
+
+  closeChats(): void {
+    this.message.receiver = '';
+    this.message.message = '';
+  }
+
+  sendMessage(): void {
+    this.message.time = new Date();
+    this.messages.push({...this.message});
+    this.message.message = '';
+    setTimeout(() => {
+      this.chatsContainer.nativeElement.scrollTop = this.chatsContainer.nativeElement.scrollHeight;
+    }, 200);
+  }
+
+  getReceiverName(): string {
+    return this.contacts.find(item => item.id === this.message.receiver).name;
   }
 }

@@ -8,11 +8,11 @@
       </div>
 
       <div class="settings">
-        <label>+ Add</label>
+        <label (click)="showAddContact = true; selectedContacts = []">+ Add</label>
         <mat-icon aria-hidden="false" aria-label="Mail">mail_outline</mat-icon>
 
         <mat-form-field>
-          <mat-select [(ngModel)]="loggedInContact">
+          <mat-select [(ngModel)]="loggedInContact" (ngModelChange)="message.sender = loggedInContact.id; closeChats()">
             <mat-option *ngFor="let contact of contacts" [value]="contact">
               {{contact.name}}
             </mat-option>
@@ -69,17 +69,20 @@
         </div>
     
         <div class="contact-list"> 
-          <mat-selection-list #contactslist [(ngModel)]="selectedContacts" [disabled]="showAddContact">
-            <mat-list-option checkboxPosition="before" *ngFor="let contact of contacts" [value]="contact">
-              <div class="basic-info">
-                <div class="initials" [style.background-color]="contact.color">{{contact.initials}}</div>
-                <div class="info">
-                  <label class="name">{{contact.name}}</label>
-                  <label class="email">{{contact.email}}</label>
+          <mat-selection-list #contactslist [(ngModel)]="selectedContacts"
+            [disabled]="showAddContact || !!message.receiver">
+            <ng-container *ngFor="let contact of contacts">
+              <mat-list-option checkboxPosition="before" *ngIf="contact.id !== loggedInContact.id" [value]="contact">
+                <div class="basic-info">
+                  <div class="initials" [style.background-color]="contact.color">{{contact.initials}}</div>
+                  <div class="info">
+                    <label class="name">{{contact.name}}</label>
+                    <label class="email">{{contact.email}}</label>
+                  </div>
                 </div>
-              </div>
-              <label class="company">{{contact.company}}</label>
-            </mat-list-option>
+                <label class="company">{{contact.company}}</label>
+              </mat-list-option>
+            </ng-container>
           </mat-selection-list>
         </div>
       </div>
@@ -118,7 +121,7 @@
           <div class="options">
             <mat-icon (click)="editContact()">edit</mat-icon>
             <mat-icon (click)="deleteContact()">delete</mat-icon>
-            <mat-icon>chat</mat-icon>
+            <mat-icon *ngIf="loggedInContact.id !== selectedContacts[0].id" (click)="openChats()">chat</mat-icon>
           </div>
         </div>
 
@@ -169,6 +172,24 @@
             <button mat-stroked-button color="warn" (click)="showAddContact = false">Cancel</button>
             <button mat-raised-button class="add-contact-button" [disabled]="!isValid()" (click)="addContact()">
               {{ isEdit ? 'Update' : 'Add'}} contact
+            </button>
+          </div>
+        </div>
+
+        <div class="chats-main" *ngIf="message.receiver">
+          <div class="header">
+            <label>{{getReceiverName()}}</label>
+            <mat-icon (click)="closeChats()">close</mat-icon>
+          </div>
+          <div #chats class="chats">
+            <label *ngFor="let message of getMessages()" [ngClass]="{ 'self': message.sender === loggedInContact.id, 'other': message.sender !== loggedInContact.id }">
+              {{message.message}}
+            </label>
+          </div>
+          <div class="message-input">
+            <input matInput placeholder="Type your message." [(ngModel)]="message.message" (keyup.enter)="sendMessage()"/>
+            <button mat-mini-fab (click)="sendMessage()">
+              <mat-icon>send</mat-icon>
             </button>
           </div>
         </div>

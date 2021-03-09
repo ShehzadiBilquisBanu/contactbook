@@ -225,9 +225,11 @@
         flex: 1;
 
         .user-details {
-          margin: 207px 100px 64px 0px;
+          margin: 48px 100px 64px 0px;
           background-color: #eae8e9;
           border-radius: 4px;
+          position: sticky;
+          top: 98px;
 
           .name-role {
             display: flex;
@@ -288,6 +290,7 @@
 
             mat-icon {
               font-size: 36px;
+              cursor: pointer;
             }
           }
         }
@@ -297,6 +300,8 @@
           padding: 24px;
           background-color: #eae8e9;
           border-radius: 4px;
+          position: sticky;
+          top: 98px;
 
           button {
             padding: 8px 18px;
@@ -311,10 +316,12 @@
         }
 
         .add-contact {
-          margin: 207px 100px 64px 0px;
+          margin: 48px 100px 64px 0px;
           padding: 24px;
-          background-color: #eae8e9;
+          box-shadow: 0px 0px 4px 0px #7a6976;
           border-radius: 4px;
+          position: sticky;
+          top: 98px;
           display: flex;
           flex-direction: column;
 
@@ -331,6 +338,91 @@
               background: linear-gradient(90deg, rgba(255,137,101,1) 0%, rgba(254,101,165,1) 100%);
               color: white;
             }
+          }
+        }
+
+        .chats-main {
+          height: 100%;
+          max-height: 80vh;
+          margin: 48px 100px 64px 0px;
+          box-shadow: 0px 0px 4px 0px #7a6976;
+          border-radius: 4px;
+          position: sticky;
+          top: 98px;
+          padding-bottom: 12px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+
+          .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px;
+            background: linear-gradient(90deg, rgba(255,137,101,1) 0%, rgba(254,101,165,1) 100%);
+
+            label {
+              font-size: 18px;
+              color: white;
+            }
+
+            mat-icon {
+              align-self: flex-end;
+              color: white;
+              cursor: pointer;
+            }
+          }
+
+          .chats {
+            height: 100%;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+
+            label {
+              margin-top: 12px;
+              max-width: 318px;
+              min-width: 180px;
+              padding: 12px;
+            }
+
+            .self {
+              border-radius: 26px 0 26px 26px;
+              background: linear-gradient(90deg, rgba(255,137,101,1) 0%, rgba(254,101,165,1) 100%);
+              color: white;
+              align-self: flex-end;
+            }
+
+            .other {
+              border-radius: 0 26px 26px 26px;
+              color: black;
+              border: 1px solid black;
+              align-self: flex-start;
+            }
+          }
+
+          .message-input {
+            display: flex;
+            margin: 24px;
+            padding: 12px;
+            border: 1px solid #cdcdcd;
+            border-radius: 38px;
+
+            input {
+              margin: 0px 16px;
+            }
+
+            button {
+              background: linear-gradient(90deg, rgba(255,137,101,1) 0%, rgba(254,101,165,1) 100%);
+
+              mat-icon {
+                font-size: 18px;
+                width: 18px;
+                height: 18px;
+              }
+            }
+
           }
         }
       }

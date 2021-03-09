@@ -14,6 +14,13 @@ interface Contact {
   color: string;
 }
 
+interface Message {
+  sender: string;
+  receiver: string;
+  message: string;
+  time: Date;
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -62,6 +69,7 @@ export class AppComponent implements OnInit{
   selectedContacts: Contact[] = [];
   showAddContact: boolean = false;
   isEdit: boolean = false;
+  showChats: boolean = false;
 
   contact: Contact = {
     id: '',
@@ -74,6 +82,9 @@ export class AppComponent implements OnInit{
     role: '',
     color: ''
   };
+
+  loggedInContact: Contact = this.contacts[0];
+  messages: Message[] = [];
 
   constructor(private _snackBar: MatSnackBar) {}
 
@@ -143,5 +154,9 @@ export class AppComponent implements OnInit{
     this.selectedContacts.forEach(item => {
       this.contacts.splice(this.contacts.findIndex(contact => contact.id === item.id), 1);
     });
+  }
+
+  openChats(): void {
+    
   }
 }

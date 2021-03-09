@@ -12,7 +12,7 @@
         <mat-icon aria-hidden="false" aria-label="Mail">mail_outline</mat-icon>
 
         <mat-form-field>
-          <mat-select [ngModel]="contacts[0]">
+          <mat-select [(ngModel)]="loggedInContact">
             <mat-option *ngFor="let contact of contacts" [value]="contact">
               {{contact.name}}
             </mat-option>

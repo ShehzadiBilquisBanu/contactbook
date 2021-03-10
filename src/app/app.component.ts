@@ -88,7 +88,7 @@ export class AppComponent implements OnInit {
   };
 
   loggedInContact: Contact = this.contacts[0];
-  messages: Message[] = [];
+  messages: Map<String, Message[]> = new Map();
   message: Message = {
     sender: this.loggedInContact.id,
     message: '',
@@ -152,9 +152,14 @@ export class AppComponent implements OnInit {
     this.contact = {
       ...this.selectedContacts[0]
     };
-    this.selectedContacts = [];
-    this.showAddContact = true;
+    this.openAddContact();
     this.isEdit = true;
+  }
+
+  openAddContact(): void {
+    this.showAddContact = true;
+    this.selectedContacts = [];
+    this.message.receiver = '';
   }
 
   deleteContact(): void {
@@ -164,7 +169,9 @@ export class AppComponent implements OnInit {
   }
 
   getMessages(): Message[] {
-    return this.messages.filter(item => item.sender === this.loggedInContact.id || item.receiver === this.loggedInContact.id);
+    const messages: Message[] = this.messages.get(this.loggedInContact.id);
+    return messages ? messages.filter(item => (item.sender === this.loggedInContact.id && item.receiver === this.message.receiver)
+      || (item.sender === this.message.receiver && item.receiver === this.loggedInContact.id)) : [];
   }
 
   openChats(): void {
@@ -178,8 +185,22 @@ export class AppComponent implements OnInit {
   }
 
   sendMessage(): void {
+    if (!this.message.message.trim()) {
+      return;
+    }
     this.message.time = new Date();
-    this.messages.push({...this.message});
+    const senderMessages: Message[] = this.messages.get(this.message.sender);
+    const receiverMessages: Message[] = this.messages.get(this.message.receiver);
+    if (senderMessages) {
+      senderMessages.push({...this.message});
+    } else {
+      this.messages.set(this.message.sender, [{...this.message}]);
+    }
+    if (receiverMessages) {
+      receiverMessages.push({...this.message});
+    } else {
+      this.messages.set(this.message.receiver, [{...this.message}]);
+    }
     this.message.message = '';
     setTimeout(() => {
       this.chatsContainer.nativeElement.scrollTop = this.chatsContainer.nativeElement.scrollHeight;
